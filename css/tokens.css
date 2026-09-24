@@ -1,0 +1,224 @@
+/* ==========================================================================
+   tokens.css — Design tokens + text styles
+   Exported 1:1 from the Framer project "Portfolio Tony" (4pRs8QyCSry0wVCAGf6n)
+
+   Contains:
+     1. Colour style tokens (Framer > Styles > Colors)
+     2. Typography: the 10 Framer text style presets, with their own
+        text breakpoints (these are NOT the same as the layout breakpoints)
+     3. Link style presets (Framer > Styles > Links)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. COLOUR TOKENS
+   Framer token id                        Framer name
+   4700dde7-0153-473e-b254-a65d3101e7fd   Paper
+   10b424b0-bdc3-473c-9818-2c1bae04ed32   Ink
+   8c5cdb7e-5814-4c70-872d-92d6d2b082fc   Ink Muted
+   a4480396-9e0e-45a0-ad4f-0a3bb774af57   Rule
+   c9eecf2f-f036-43d8-85b2-605f53ca9bbe   Surface
+   373686f5-fa45-4744-9621-3270f67c4b89   Accent
+
+   The project defines a single (light) value for every token — it has no
+   dark-mode variants — so these are declared once on :root.
+   -------------------------------------------------------------------------- */
+:root {
+  --paper: rgb(236, 234, 222);
+  --ink: rgb(40, 24, 34);
+  --ink-muted: rgb(107, 95, 102);
+  --rule: rgb(206, 197, 159);
+  --surface: rgb(232, 229, 222);
+  --accent: rgb(232, 217, 210);
+
+  /* Shell padding per layout breakpoint (from the "Site" layout template) */
+  --gutter: 26px;
+
+  /* Max width of every page section (Framer: maxWidth 1760px) */
+  --section-max: 1760px;
+}
+
+/* --------------------------------------------------------------------------
+   2. TEXT STYLE PRESETS
+
+   Every preset carries the same OpenType feature set in Framer:
+   blwf, cv03, cv04, cv09, cv11 — reproduced verbatim below.
+
+   IMPORTANT: Framer text styles have their own breakpoints, keyed on
+   min-width, and they differ per preset:
+     Wordmark        1200 / 810 / 640 / 0
+     Display         1200 / 810 / 0
+     Display Small   1200 / 810 / 0
+     Editorial Note  1200 / 810 / 0
+     Lead            1200 / 1024 / 0
+     Body            1200 / 810 / 0
+     Label, Label Muted, Body Small, Nav — single size, no breakpoints
+   They are written mobile-first (smallest value as the base) to match
+   Framer's min-width semantics exactly.
+   -------------------------------------------------------------------------- */
+
+.ts-wordmark,
+.ts-display,
+.ts-display-small,
+.ts-editorial-note,
+.ts-lead,
+.ts-label,
+.ts-label-muted,
+.ts-body,
+.ts-body-small,
+.ts-nav {
+  font-feature-settings: "blwf" on, "cv03" on, "cv04" on, "cv09" on, "cv11" on;
+  font-weight: 400;
+  font-style: normal;
+  text-align: start;
+  /* Framer breaks over-long words rather than letting them overflow their
+     frame (e.g. the email address in the narrow /contact columns on Phone). */
+  overflow-wrap: break-word;
+}
+
+/* --- Wordmark ------------------------------------------------------------ */
+.ts-wordmark {
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1em;
+  font-size: 22px;
+}
+@media (min-width: 640px)  { .ts-wordmark { font-size: 24px; } }
+@media (min-width: 810px)  { .ts-wordmark { font-size: 28px; } }
+@media (min-width: 1200px) { .ts-wordmark { font-size: 34px; } }
+
+/* --- Display (default tag: h1) ------------------------------------------- */
+.ts-display {
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+  line-height: 0.94em;
+  text-wrap: balance;
+  font-size: 46px;
+}
+@media (min-width: 810px)  { .ts-display { font-size: 72px; } }
+@media (min-width: 1200px) { .ts-display { font-size: 128px; } }
+
+/* --- Display Small (default tag: h2) ------------------------------------- */
+.ts-display-small {
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1em;
+  text-wrap: balance;
+  font-size: 32px;
+}
+@media (min-width: 810px)  { .ts-display-small { font-size: 44px; } }
+@media (min-width: 1200px) { .ts-display-small { font-size: 64px; } }
+.ts-display-small > p + p { margin-top: 40px; } /* paragraphSpacing 40 */
+
+/* --- Editorial Note (italic) --------------------------------------------- */
+.ts-editorial-note {
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  font-style: italic;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.4em;
+  text-wrap: balance;
+  font-size: 19px;
+}
+@media (min-width: 810px)  { .ts-editorial-note { font-size: 22px; } }
+@media (min-width: 1200px) { .ts-editorial-note { font-size: 28px; } }
+.ts-editorial-note > p + p { margin-top: 20px; } /* paragraphSpacing 20 */
+
+/* --- Lead ---------------------------------------------------------------- */
+.ts-lead {
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.42em;
+  font-size: 21px;
+}
+@media (min-width: 1024px) { .ts-lead { font-size: 26px; } }
+@media (min-width: 1200px) { .ts-lead { font-size: 32px; } }
+.ts-lead > p + p { margin-top: 26px; } /* paragraphSpacing 26 */
+
+/* --- Label / Label Muted -------------------------------------------------- */
+.ts-label,
+.ts-label-muted {
+  font-family: "Arimo", Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  line-height: 1.2em;
+  font-size: 11px;
+}
+.ts-label       { color: var(--ink); }
+.ts-label-muted { color: var(--ink-muted); }
+.ts-label > p + p,
+.ts-label-muted > p + p { margin-top: 20px; }
+
+/* --- Body ---------------------------------------------------------------- */
+.ts-body {
+  font-family: "Arimo", Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  letter-spacing: 0em;
+  line-height: 1.55em;
+  font-size: 15px;
+}
+@media (min-width: 810px)  { .ts-body { font-size: 16px; } }
+@media (min-width: 1200px) { .ts-body { font-size: 17px; } }
+.ts-body > p + p { margin-top: 20px; } /* paragraphSpacing 20 */
+
+/* --- Body Small ---------------------------------------------------------- */
+.ts-body-small {
+  font-family: "Arimo", Helvetica, Arial, sans-serif;
+  color: var(--ink-muted);
+  letter-spacing: 0em;
+  line-height: 1.5em;
+  font-size: 14px;
+}
+.ts-body-small > p + p { margin-top: 20px; }
+
+/* --- Nav ----------------------------------------------------------------- */
+.ts-nav {
+  font-family: "Arimo", Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.2em;
+  font-size: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   3. LINK STYLE PRESETS
+   Framer transition on all three: tween cubic-bezier(0.44,0,0.56,1) 0.3s
+   -------------------------------------------------------------------------- */
+.lk-nav,
+.lk-inline,
+.lk-project {
+  transition: color 0.3s cubic-bezier(0.44, 0, 0.56, 1),
+              text-decoration-color 0.3s cubic-bezier(0.44, 0, 0.56, 1);
+}
+
+/* Nav Link */
+.lk-nav { color: var(--ink); text-decoration: none; }
+.lk-nav:hover { color: var(--ink-muted); }
+/* Framer's "current page" state */
+.lk-nav[aria-current="page"] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+/* Inline Link */
+.lk-inline {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.lk-inline:hover {
+  color: var(--ink-muted);
+  text-decoration-color: var(--ink-muted);
+}
+
+/* Project Link */
+.lk-project { color: var(--ink); text-decoration: none; }
+.lk-project:hover { color: var(--ink-muted); }

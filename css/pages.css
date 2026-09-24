@@ -1,0 +1,636 @@
+/* ==========================================================================
+   pages.css — Per-page layout, pixel-faithful to the Framer canvas
+   Project: "Portfolio Tony" (4pRs8QyCSry0wVCAGf6n)
+
+   Convention used throughout this file, mirroring how Framer stores the design:
+     - unprefixed rules  = the Desktop breakpoint (Framer's PRIMARY)
+     - @media (min-width:1024px) and (max-width:1199.98px) = Laptop overrides
+     - @media (min-width: 810px) and (max-width:1023.98px) = Tablet overrides
+     - @media (max-width: 809.98px)                        = Phone  overrides
+   Only values that actually differ from Desktop appear in a media query —
+   exactly the set of overrides stored on each Framer breakpoint.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   SHARED PAGE FURNITURE
+   Blocks that repeat identically across several pages.
+   ========================================================================== */
+
+/* --- "Opening" hero section (all 9 pages) --------------------------------- */
+.p-opening {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+  padding: 230px 0 44px 0;
+}
+@media (min-width: 1024px) and (max-width: 1199.98px) { .p-opening { padding: 202px 0 39px 0; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .p-opening { padding: 166px 0 32px 0; } }
+@media (max-width: 809.98px)                          { .p-opening { padding: 115px 0 22px 0; } }
+
+/* --- "Sub" strip under the hero title ------------------------------------- */
+.p-sub {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 52px 0 0 0;
+  position: relative;
+  width: 100%;
+}
+@media (min-width: 1024px) and (max-width: 1199.98px) { .p-sub { padding-top: 46px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .p-sub { padding-top: 37px; } }
+@media (max-width: 809.98px) {
+  .p-sub {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 18px;
+    padding-top: 26px;
+  }
+}
+
+/* --- Horizontal rule strip with a label on each side ---------------------- */
+.p-rule {
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0 0 0;
+}
+
+/* --- "Closing" index strip ------------------------------------------------ */
+.p-closing {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* --- Label + list row, used on /about, /cv and the project pages ---------- */
+.p-lrow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 26px;
+  position: relative;
+  width: 100%;
+}
+.p-lrow__label { width: 170px; flex: none; }
+.p-lrow__list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 26px;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+.p-lrow__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 4px;
+  position: relative;
+  width: 100%;
+}
+/* In Framer these children are width "1fr" inside a vertical stack, which
+   means "fill the width" — without this they shrink to max-content and long
+   values (an email address, say) spill out of their column. */
+.p-lrow__item > * { width: 100%; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .p-lrow__label { width: 145px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .p-lrow__label { width: 114px; } }
+@media (max-width: 809.98px) {
+  .p-lrow { flex-direction: column; gap: 12px; }
+  /* Framer's "1fr" means "fill the cross axis"; once the stack turns
+     vertical that is a full width, not a flexible height. */
+  .p-lrow__label { width: auto; }
+  .p-lrow__list  { flex: none; width: 100%; }
+}
+
+
+/* ==========================================================================
+   HOME  —  /   (Framer WebPageNode #augiA20Il)
+   ========================================================================== */
+
+/* The home "Index Rule" uses the Surface token for its border, not Rule.
+   (Framer: borderColor c9eecf2f… = Surface). Reproduced as-is. */
+.home-index-rule { border-top-color: var(--surface); }
+
+.home-work {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(50px, 1fr));
+  align-items: center;                 /* Framer gridAlignment: center */
+  gap: 20px 12px;
+  padding: 54px 0 0 0;
+}
+@media (min-width: 1024px) and (max-width: 1199.98px) { .home-work { padding-top: 48px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .home-work { gap: 18px 12px; padding-top: 39px; } }
+@media (max-width: 809.98px) {
+  .home-work {
+    grid-template-columns: minmax(50px, 1fr);
+    gap: 26px;
+    padding-top: 27px;
+  }
+}
+
+.home-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+  width: 100%;
+}
+.home-card__meta {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.home-closing { padding: 150px 0 130px 0; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .home-closing { padding: 132px 0 114px 0; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .home-closing { padding: 108px 0 94px 0; } }
+@media (max-width: 809.98px)                          { .home-closing { padding:  75px 0  65px 0; } }
+
+
+/* ==========================================================================
+   PROJECTS INDEX  —  /projects   (Framer WebPageNode #hue5hEArH)
+   ========================================================================== */
+
+.projects-index {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  align-items: start;                  /* Framer gridAlignment: start */
+  gap: 130px 26px;
+  padding: 54px 0 150px 0;
+}
+.projects-index__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+.projects-index__meta {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+/* The staggered "masonry" look: items 2 and 4 are pushed down. */
+.projects-index__item--offset { padding-top: 130px; }
+
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .projects-index { padding: 48px 0 132px 0; }
+  .projects-index__item--offset { padding-top: 117px; }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .projects-index { padding: 39px 0 108px 0; }
+  .projects-index__item--offset { padding-top: 78px; }
+}
+@media (max-width: 809.98px) {
+  /* Framer switches this section from a grid to a vertical stack on Phone. */
+  .projects-index {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 90px;
+    padding: 27px 0 75px 0;
+  }
+  .projects-index__item { flex: none; width: 100%; }
+  .projects-index__item--offset { padding-top: 0; }
+}
+
+
+
+/* ==========================================================================
+   ABOUT  —  /about   (Framer WebPageNode #mBnSHoEWs)
+   ========================================================================== */
+
+.about-intro { padding: 72px 0 0 0; }
+.about-intro__text { width: 100%; max-width: 900px; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .about-intro { padding-top: 65px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .about-intro { padding-top: 52px; } }
+@media (max-width: 809.98px)                          { .about-intro { padding-top: 32px; } }
+
+.about-profile {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 26px;
+  padding: 96px 0 150px 0;
+}
+.about-profile__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 80px;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+/* The "Servicios" list is the one block with a tighter gap. */
+.about-profile__list--tight { gap: 8px; }
+
+.about-portrait-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 12px;
+  width: 420px;
+  flex: none;
+}
+.about-portrait {
+  display: flex;
+  overflow: clip;
+  position: sticky;
+  top: 112px;
+  width: 420px;
+  aspect-ratio: 420 / 630;
+}
+
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .about-profile { padding: 84px 0 132px 0; }
+  .about-portrait-col { width: 357px; }
+  .about-portrait { width: 357px; }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .about-profile { padding: 69px 0 108px 0; }
+  .about-portrait-col { width: 282px; }
+  .about-portrait { width: 282px; }
+}
+@media (max-width: 809.98px) {
+  .about-profile { flex-direction: column; padding: 48px 0 75px 0; }
+  .about-profile__info { flex: none; width: 100%; }
+  .about-portrait-col { width: 358px; max-width: 100%; }
+  .about-portrait { position: relative; top: auto; width: 100%; }
+}
+
+
+/* ==========================================================================
+   CV  —  /cv   (Framer WebPageNode #T5zgKfxte)
+   ========================================================================== */
+
+.cv-profile {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 80px;
+  padding: 72px 0 110px 0;
+}
+.cv-profile__lead { max-width: 760px; }
+.cv-closing { padding: 110px 0 150px 0; }
+
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .cv-profile { padding: 63px 0 97px 0; }
+  .cv-closing { padding: 97px 0 132px 0; }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .cv-profile { padding: 52px 0 79px 0; }
+  .cv-closing { padding: 79px 0 108px 0; }
+}
+@media (max-width: 809.98px) {
+  .cv-profile { gap: 26px; padding: 36px 0 55px 0; }
+  .cv-closing { padding: 55px 0 75px 0; }
+}
+
+
+/* ==========================================================================
+   CONTACT  —  /contact   (Framer WebPageNode #xJaqIaa_M)
+   ========================================================================== */
+
+.contact-opening { padding: 230px 0 0 0; }
+
+/* "Hablemos" uses Framer's fontSize: auto-fit(100%) — the type is scaled so
+   the line exactly fills the container width. js/site.js reproduces that at
+   runtime; the sizes below are the no-JS fallback for each breakpoint. */
+.contact-statement {
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  font-weight: 400;
+  font-style: normal;
+  font-feature-settings: "blwf" on, "cv03" on, "cv04" on, "cv09" on, "cv11" on;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  line-height: 1em;
+  text-align: start;
+  width: 100%;
+  font-size: 323px;
+  white-space: nowrap;
+}
+
+.contact-rule {
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 26px;
+  padding: 72px 0 0 0;
+}
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+.contact-field > * { width: 100%; }   /* Framer: width "1fr" */
+.contact-closing { padding: 150px 0 150px 0; }
+
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .contact-opening { padding-top: 207px; }
+  .contact-statement { font-size: 275px; }
+  .contact-rule { padding-top: 65px; }
+  .contact-closing { padding: 132px 0 132px 0; }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .contact-opening { padding-top: 138px; }
+  .contact-statement { font-size: 217px; }
+  .contact-rule { padding-top: 43px; }
+  .contact-closing { padding: 108px 0 108px 0; }
+}
+@media (max-width: 809.98px) {
+  /* NOTE — reproduced exactly as authored in Framer: on the Phone breakpoint
+     the Opening and Rule sections have NO padding at all, and the three
+     contact fields stay in a single horizontal row. See codeAdapted.md
+     § "Things worth knowing" for the one-line fixes if you want them. */
+  .contact-opening { padding: 0; }
+  .contact-statement { font-size: 101px; }
+  .contact-rule { padding: 0; }
+  .contact-closing { padding: 75px 0 75px 0; }
+}
+
+
+/* ==========================================================================
+   PROJECT DETAIL PAGES  —  /projects/*
+   Shared skeleton for tony-nieve, matchflix, metamorfosis, love-packaging.
+   ========================================================================== */
+
+/* --- Meta strip (Disciplinas + index number) ------------------------------ */
+.pd-meta {
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 26px;
+  padding: 16px 0 0 0;
+}
+.pd-meta__col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+.pd-meta__col > * { width: 100%; }    /* Framer: width "1fr" */
+.pd-meta__index { align-items: flex-end; }
+.pd-meta__index > * { text-align: right; }
+@media (max-width: 809.98px) {
+  .pd-meta { flex-direction: column; gap: 18px; }
+  .pd-meta__col { flex: none; width: 100%; }
+  .pd-meta__index { align-items: flex-start; gap: 80px; }
+  .pd-meta__index > * { text-align: start; }
+}
+
+/* --- Intro / Closing text blocks ------------------------------------------ */
+.pd-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 26px;
+  padding: 110px 0 110px 0;
+}
+.pd-text__label { width: 170px; flex: none; }
+.pd-text__body { flex: 1 1 0%; min-width: 0; max-width: 760px; }
+
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .pd-text { padding: 97px 0 97px 0; }
+  .pd-text__label { width: 145px; }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .pd-text { padding: 79px 0 79px 0; }
+  .pd-text__label { width: 114px; }
+}
+@media (max-width: 809.98px) {
+  .pd-text { flex-direction: column; gap: 14px; padding: 55px 0 55px 0; }
+  .pd-text__label { width: auto; flex: none; }
+  .pd-text__body { flex: none; width: 100%; max-width: none; }
+}
+
+/* Each project page ships two Intro copies: Framer stores a different,
+   shorter "Concepto" text on the Phone breakpoint. */
+.pd-copy--phone { display: none; }
+@media (max-width: 809.98px) {
+  .pd-copy--wide  { display: none; }
+  .pd-copy--phone { display: block; }
+}
+
+/* --- Gallery -------------------------------------------------------------- */
+.pd-gallery {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 90px;
+}
+@media (min-width: 1024px) and (max-width: 1199.98px) { .pd-gallery { gap: 80px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .pd-gallery { gap: 68px; } }
+@media (max-width: 809.98px)                          { .pd-gallery { gap: 52px; } }
+
+.pd-full {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+.pd-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 26px;
+  position: relative;
+  width: 100%;
+}
+.pd-col {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+@media (max-width: 809.98px) {
+  .pd-row { flex-direction: column; }
+  /* Every staggered column offset is dropped on Phone. */
+  .pd-col { flex: none; width: 100%; padding-top: 0 !important; }
+}
+
+/* Single centred / aligned image block */
+.pd-narrow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+}
+.pd-narrow--center { justify-content: center; }
+.pd-narrow--start  { justify-content: flex-start; }
+.pd-narrow--end    { justify-content: flex-end; }
+
+/* Image + caption block (metamorfosis, love-packaging) */
+.pd-imgtext {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 26px;
+  position: relative;
+  width: 100%;
+}
+.pd-imgtext__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 0 0 26px 0;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+.pd-imgtext__text > * { width: 100%; }  /* Framer: width "1fr" */
+@media (min-width: 1024px) and (max-width: 1199.98px) { .pd-imgtext__text { padding-bottom: 23px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .pd-imgtext__text { padding-bottom: 19px; } }
+@media (max-width: 809.98px) {
+  .pd-imgtext { flex-direction: column; align-items: flex-start; }
+  .pd-imgtext__text { flex: none; width: 100%; padding-bottom: 13px; }
+}
+
+/* --- Next project --------------------------------------------------------- */
+.pd-next {
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 150px 0 150px 0;
+}
+.pd-next > * { width: 100%; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .pd-next { padding: 132px 0 132px 0; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .pd-next { padding: 108px 0 108px 0; } }
+@media (max-width: 809.98px)                          { .pd-next { padding:  75px 0  75px 0; } }
+
+
+/* ==========================================================================
+   FIXED-SIZE IMAGE FRAMES
+   These frames carry literal pixel widths in Framer (they do not stretch),
+   with a different value on every breakpoint. `aspect-ratio` is written as
+   the exact recorded width/height pair so the rendered height matches the
+   Framer canvas to the pixel.
+   On Phone the stored width is 358px (the inner width of the 390px canvas);
+   `max-width:100%` is added so narrower phones cannot overflow.
+   ========================================================================== */
+
+/* --- /projects/tony-nieve ------------------------------------------------- */
+.fx-tn-square1 { width: 700px; aspect-ratio: 700 / 697; }   /* Narrow, centred */
+.fx-tn-tall    { width: 520px; aspect-ratio: 520 / 650; }   /* Narrow, right   */
+.fx-tn-square2 { width: 760px; aspect-ratio: 760 / 760; }   /* Narrow, left    */
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .fx-tn-square1 { width: 595px; }
+  .fx-tn-tall    { width: 442px; }
+  .fx-tn-square2 { width: 646px; }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .fx-tn-square1 { width: 470px; }
+  .fx-tn-tall    { width: 349px; }
+  .fx-tn-square2 { width: 510px; }
+}
+@media (max-width: 809.98px) {
+  .fx-tn-square1 { width: 358px; max-width: 100%; }
+  .fx-tn-tall    { width: 358px; max-width: 100%; }
+  .fx-tn-square2 { width: 358px; max-width: 100%; }
+}
+
+/* --- /projects/matchflix -------------------------------------------------- */
+.fx-mf-wide { width: 860px; aspect-ratio: 860 / 645; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .fx-mf-wide { width: 731px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .fx-mf-wide { width: 577px; } }
+@media (max-width: 809.98px) { .fx-mf-wide { width: 358px; max-width: 100%; } }
+
+/* --- /projects/metamorfosis ----------------------------------------------- */
+.fx-mt-piece { width: 420px; aspect-ratio: 420 / 630; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .fx-mt-piece { width: 357px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .fx-mt-piece { width: 282px; } }
+@media (max-width: 809.98px) { .fx-mt-piece { width: 100%; } }
+
+/* --- /projects/love-packaging --------------------------------------------- */
+.fx-lp-piece { width: 620px; aspect-ratio: 620 / 930; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .fx-lp-piece { width: 527px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .fx-lp-piece { width: 416px; } }
+@media (max-width: 809.98px) { .fx-lp-piece { width: 100%; } }
+
+
+/* ==========================================================================
+   STAGGERED COLUMN OFFSETS inside project galleries
+   (Framer stores a padding-top on one column of a Row to offset it.)
+   ========================================================================== */
+.off-90  { padding-top: 90px;  }
+.off-80  { padding-top: 80px;  }
+.off-110 { padding-top: 110px; }
+.off-120 { padding-top: 120px; }
+.off-70  { padding-top: 70px;  }
+
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .off-90  { padding-top: 81px;  }
+  .off-80  { padding-top: 72px;  }
+  .off-110 { padding-top: 99px;  }
+  .off-120 { padding-top: 108px; }
+  .off-70  { padding-top: 63px;  }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .off-90  { padding-top: 54px; }
+  .off-80  { padding-top: 48px; }
+  .off-110 { padding-top: 66px; }
+  .off-120 { padding-top: 72px; }
+  .off-70  { padding-top: 42px; }
+}
+
+
+/* ==========================================================================
+   PAGE-SPECIFIC OVERRIDES
+   ========================================================================== */
+
+/* /projects/matchflix — this page alone has a taller gap under its title. */
+.mf-opening { padding: 230px 0 130px 0; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .mf-opening { padding: 202px 0 158px 0; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .mf-opening { padding: 166px 0 130px 0; } }
+@media (max-width: 809.98px)                          { .mf-opening { padding: 115px 0  90px 0; } }
+
+/* /cv — the "Perfil" paragraph is the one list item with a measure cap. */
+.cv-profile__lead { display: block; max-width: 760px; }

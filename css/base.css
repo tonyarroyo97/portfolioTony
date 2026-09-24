@@ -1,0 +1,371 @@
+/* ==========================================================================
+   base.css — Reset, the "Site" layout template, navigation, footer, motion
+   Exported from the Framer project "Portfolio Tony"
+
+   LAYOUT BREAKPOINTS (identical on all 9 pages and on the layout template):
+     Desktop   (min-width: 1200px)                          <- Framer's primary
+     Laptop    (min-width: 1024px) and (max-width: 1199.98px)
+     Tablet    (min-width:  810px) and (max-width: 1023.98px)
+     Phone                          (max-width:  809.98px)
+
+   Because Framer's primary breakpoint is Desktop, the unprefixed rules below
+   are the Desktop values and the three media queries carry the per-breakpoint
+   overrides — exactly mirroring how the design is authored in Framer.
+   ========================================================================== */
+
+/* --- Reset ---------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Arimo", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, p { margin: 0; font-size: inherit; font-weight: inherit; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* --------------------------------------------------------------------------
+   THE "Site" LAYOUT TEMPLATE  (Framer LayoutTemplateNode #mflsNoh3d)
+
+   Framer structure:
+     Site (stack vertical, align center, overflow clip, fill Paper)
+       ├── Header   (sticky top 0, z-index 5, width 100%)
+       │     └── Navigation component instance
+       ├── Placeholder   <- the page's own content is injected here
+       └── Footer   (border-top Rule, width 100%)
+
+   Padding per breakpoint: 26 / 24 / 20 / 16
+   -------------------------------------------------------------------------- */
+.site {
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Framer: overflow "clip". overflow-x:clip does NOT create a scroll
+     container, so the sticky header keeps working. */
+  overflow-x: clip;
+  padding: 0 var(--gutter);
+  min-height: 100vh;
+}
+
+@media (min-width: 1024px) and (max-width: 1199.98px) { :root { --gutter: 24px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { :root { --gutter: 20px; } }
+@media (max-width: 809.98px)                          { :root { --gutter: 16px; } }
+
+/* --- Header (sticky) ------------------------------------------------------ */
+.site-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: auto;
+  z-index: 5;
+}
+
+/* --- Page content slot (the Framer PlaceholderNode) ----------------------- */
+.site-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Every page section in this project is width:100% with maxWidth 1760px. */
+.section {
+  position: relative;
+  width: 100%;
+  max-width: var(--section-max);
+}
+
+/* --- Footer --------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 0 26px 0;
+  position: relative;
+  width: 100%;
+}
+.site-footer__right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 40px;
+  width: auto;
+}
+@media (max-width: 809.98px) {
+  .site-footer {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px 0 24px 0;
+  }
+  .site-footer__identity { width: 100%; }
+  .site-footer__right { justify-content: flex-start; gap: 24px; }
+}
+
+/* ==========================================================================
+   NAVIGATION  (Framer ComponentNode #nXamrB95Y, variants Desktop/Phone/Phone Open)
+
+   The layout template uses the "Desktop" variant on Desktop, Laptop and Tablet,
+   and the "Phone" variant on the Phone breakpoint — so the switch to the
+   burger menu happens at max-width: 809.98px.
+   ========================================================================== */
+.nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.nav__bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 0;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.nav__right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 34px;
+  width: auto;
+}
+
+.nav__links {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 34px;
+  width: auto;
+}
+
+/* Toggle — hidden on the Desktop variant (Framer: visible false) */
+.nav__toggle {
+  display: none;
+  width: auto;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  font: inherit;
+}
+.nav__toggle .nav__toggle-close { display: none; }
+
+/* Drawer — hidden on the Desktop variant (Framer: visible false) */
+.nav__drawer {
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0 44px 0;
+  position: relative;
+  width: 100%;
+}
+.nav__drawer > .lk-project { width: 100%; }
+.nav__rule {
+  background: var(--rule);
+  overflow: clip;
+  position: relative;
+  width: 100%;
+  height: 1px;
+  flex: none;
+}
+
+/* --- Phone variant -------------------------------------------------------- */
+@media (max-width: 809.98px) {
+  .nav {
+    background: var(--paper);
+    overflow: hidden;      /* Framer: clips the drawer away when closed */
+    height: 64px;
+  }
+  /* flex:none is essential: the drawer must overflow the 64px-tall nav and be
+     clipped, exactly as Framer does — not squash the bar to make room. */
+  .nav__bar { flex: none; padding: 0; height: 64px; }
+  .nav__right { display: none; }         /* Framer: visible false */
+  .nav__toggle { display: block; }
+  .nav__drawer { flex: none; display: flex; }
+
+  /* --- Phone Open variant --- */
+  .nav.is-open {
+    height: auto;
+    max-height: 100vh;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .nav.is-open .nav__toggle-menu  { display: none; }
+  .nav.is-open .nav__toggle-close { display: inline; }
+}
+
+/* ==========================================================================
+   LANGUAGE TOGGLE  (Framer ComponentNode #iIDwrWNSx, variants ES / EN)
+
+   NOTE: this is a purely visual variant switch in the Framer project — the
+   project has no locales configured, so it does not translate anything.
+   Reproduced here exactly as designed.
+   ========================================================================== */
+.lang {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+}
+.lang__es    { color: var(--ink); }
+.lang__slash { color: var(--rule); }
+.lang__en    { color: var(--ink-muted); }
+.lang.is-en .lang__es { color: var(--ink-muted); }
+.lang.is-en .lang__en { color: var(--ink); }
+
+/* ==========================================================================
+   SHARED LAYOUT PRIMITIVES
+   Framer "stack" -> flex; width "1fr" -> flex:1 1 0%; width "auto" -> auto
+   ========================================================================== */
+.stack   { display: flex; position: relative; }
+.col     { flex-direction: column; }
+.row     { flex-direction: row; }
+.jc-start   { justify-content: flex-start; }
+.jc-end     { justify-content: flex-end; }
+.jc-center  { justify-content: center; }
+.jc-between { justify-content: space-between; }
+.ai-start   { align-items: flex-start; }
+.ai-center  { align-items: center; }
+.ai-end     { align-items: flex-end; }
+.w-full  { width: 100%; }
+.w-auto  { width: auto; }
+.w-fr    { flex: 1 1 0%; min-width: 0; }
+
+/* Image frames -------------------------------------------------------------
+   Framer stores BOTH a pixel height and an aspectRatio on every image frame.
+   For frames with width:100% the stored height is derived from the width by
+   the aspect ratio (verified against every breakpoint), so `aspect-ratio`
+   reproduces the Framer heights exactly while staying fluid between
+   breakpoints. Fixed-width image frames keep their literal px values.
+   -------------------------------------------------------------------------- */
+.img {
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+  position: relative;
+  width: 100%;
+}
+/* Absolutely positioned so the photo's intrinsic size can never push the
+   box past its aspect-ratio — the frame's height is set by the ratio alone,
+   exactly as Framer computes it. */
+.img > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Framer hoverEffect: scale 1.02, tween cubic-bezier(.4,0,.2,1) 0.8s */
+.img--hover > img {
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.img--hover:hover > img { transform: scale(1.02); }
+
+/* Aspect ratios used across the project */
+.ar-150 { aspect-ratio: 1.5; }
+.ar-133 { aspect-ratio: 1.33; }
+.ar-127 { aspect-ratio: 1.27; }
+.ar-100 { aspect-ratio: 1; }
+.ar-080 { aspect-ratio: 0.8; }
+.ar-079 { aspect-ratio: 0.79; }
+.ar-068 { aspect-ratio: 0.68; }
+.ar-067 { aspect-ratio: 0.67; }
+.ar-066 { aspect-ratio: 0.66; }
+
+/* ==========================================================================
+   MOTION
+   Framer uses spring physics; CSS has no springs, so each spring is
+   approximated with the cubic-bezier below (a gentle overshoot-free ease-out
+   that matches the perceived duration and damping of the originals).
+   ========================================================================== */
+:root { --spring: cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* --- appearEffect: fade + rise on scroll into view ------------------------ */
+/* .reveal is only applied by js/site.js, so with JS disabled everything
+   stays visible — no content is ever hidden behind an animation. */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 26px));
+  transition: opacity 0.9s var(--spring), transform 0.9s var(--spring);
+}
+.reveal.is-in { opacity: 1; transform: none; }
+.reveal--22 { --reveal-y: 22px; }            /* /about and /cv sections */
+.reveal--95 { transition-duration: 0.95s; }  /* project detail pages */
+
+/* --- textEffect: per-word reveal on the page titles ----------------------- */
+/* Framer: tokenization "word", delay 0.04s/word, y 22px, blur 10px,
+   spring 0.9s, bounce 0.1, start delay 0.05s, threshold 0.2, no replay. */
+.text-reveal > .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(10px);
+  transition: opacity 0.9s var(--spring), transform 0.9s var(--spring),
+              filter 0.9s var(--spring);
+  transition-delay: calc(0.05s + var(--i, 0) * 0.04s);
+}
+.text-reveal.is-in > .word {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+/* --- pageEffects: the Framer page transition (home page) ------------------ */
+/* Framer animates page enter/exit opacity inside its SPA router. On a static
+   multi-page site only the "enter" half is observable, so it is reproduced
+   as a load fade. */
+.page-fade { animation: page-enter 0.45s cubic-bezier(0.4, 0, 0.2, 1) both; }
+@keyframes page-enter { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .text-reveal > .word,
+  .img--hover > img,
+  .lk-nav, .lk-inline, .lk-project {
+    transition: none !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .text-reveal > .word { opacity: 1; transform: none; filter: none; }
+  .page-fade { animation: none; }
+}
