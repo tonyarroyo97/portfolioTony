@@ -3,7 +3,7 @@
    Project: "Portfolio Tony" (4pRs8QyCSry0wVCAGf6n)
 
    1. Navigation variant switch  (Phone <-> Phone Open)
-   2. Language ES/EN variant switch
+   2. Language ES/EN switch — goes to the same page in the other language
    3. "current page" underline on the nav links
    4. appearEffect  — fade + rise when a block scrolls into view
    5. textEffect    — per-word reveal on the page titles
@@ -47,17 +47,27 @@
   }
 
   /* ------------------------------------------------------------------------
-     2. LANGUAGE TOGGLE — Framer variants "ES" and "EN"
+     2. LANGUAGE SWITCH — ES (site root) / EN (under en/, same slugs)
 
-     In the Framer project this only swaps which of the two labels is
-     highlighted; the project has no locales configured, so no text is
-     translated. Each instance keeps its own state, exactly as in Framer.
+     The highlight is not state: each page is written with its own language
+     marked aria-current="true". The other option carries data-href, the
+     same page in that language as a relative URL (so it works in a
+     subfolder or from disk). Clicking the active language or the "/"
+     does nothing. The language is whatever the URL says — nothing is
+     remembered and nothing redirects on the browser's language.
      ------------------------------------------------------------------------ */
   function initLanguage() {
-    Array.prototype.forEach.call(document.querySelectorAll('.lang'), function (el) {
-      el.addEventListener('click', function () {
-        var en = el.classList.toggle('is-en');
-        el.setAttribute('aria-pressed', en ? 'true' : 'false');
+    Array.prototype.forEach.call(document.querySelectorAll('.lang [role="button"]'), function (el) {
+      var go = function () {
+        var href = el.getAttribute('data-href');
+        if (href) window.location.assign(href);
+      };
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          go();
+        }
       });
     });
   }

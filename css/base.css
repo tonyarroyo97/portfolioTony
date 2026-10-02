@@ -226,11 +226,12 @@ img { display: block; max-width: 100%; }
 }
 
 /* ==========================================================================
-   LANGUAGE TOGGLE  (Framer ComponentNode #iIDwrWNSx, variants ES / EN)
+   LANGUAGE SWITCH  (Framer ComponentNode #iIDwrWNSx, variants ES / EN)
 
-   NOTE: this is a purely visual variant switch in the Framer project — the
-   project has no locales configured, so it does not translate anything.
-   Reproduced here exactly as designed.
+   Spanish is the default locale at the site root, English lives under en/.
+   The highlighted language is the page's own (aria-current="true"), set in
+   the markup; js/site.js makes the other one go to the same page in that
+   language.
    ========================================================================== */
 .lang {
   display: flex;
@@ -242,16 +243,10 @@ img { display: block; max-width: 100%; }
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  background: none;
-  border: 0;
-  padding: 0;
-  font: inherit;
 }
-.lang__es    { color: var(--ink); }
-.lang__slash { color: var(--rule); }
-.lang__en    { color: var(--ink-muted); }
-.lang.is-en .lang__es { color: var(--ink-muted); }
-.lang.is-en .lang__en { color: var(--ink); }
+.lang__es, .lang__en          { color: var(--ink-muted); }
+.lang [aria-current="true"]   { color: var(--ink); }
+.lang__slash                  { color: var(--rule); }
 
 /* ==========================================================================
    SHARED LAYOUT PRIMITIVES
