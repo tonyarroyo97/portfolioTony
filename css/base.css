@@ -283,7 +283,8 @@ img { display: block; max-width: 100%; }
 /* Absolutely positioned so the photo's intrinsic size can never push the
    box past its aspect-ratio — the frame's height is set by the ratio alone,
    exactly as Framer computes it. */
-.img > img {
+.img > img,
+.img > video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -297,16 +298,18 @@ img { display: block; max-width: 100%; }
 }
 .img--hover:hover > img { transform: scale(1.02); }
 
-/* Aspect ratios used across the project */
-.ar-150 { aspect-ratio: 1.5; }
-.ar-133 { aspect-ratio: 1.33; }
-.ar-127 { aspect-ratio: 1.27; }
-.ar-100 { aspect-ratio: 1; }
-.ar-080 { aspect-ratio: 0.8; }
-.ar-079 { aspect-ratio: 0.79; }
-.ar-068 { aspect-ratio: 0.68; }
-.ar-067 { aspect-ratio: 0.67; }
-.ar-066 { aspect-ratio: 0.66; }
+/* Aspect ratios used across the project. --ratio is also read by the
+   justified gallery rows (.pd-row) to share the width between items. */
+.ar-150 { aspect-ratio: 1.5;  --ratio: 1.5; }
+.ar-133 { aspect-ratio: 1.33; --ratio: 1.33; }
+.ar-127 { aspect-ratio: 1.27; --ratio: 1.27; }
+.ar-100 { aspect-ratio: 1;    --ratio: 1; }
+.ar-080 { aspect-ratio: 0.8;  --ratio: 0.8; }
+.ar-079 { aspect-ratio: 0.79; --ratio: 0.79; }
+.ar-068 { aspect-ratio: 0.68; --ratio: 0.68; }
+.ar-067 { aspect-ratio: 0.67; --ratio: 0.67; }
+.ar-066 { aspect-ratio: 0.66; --ratio: 0.66; }
+.ar-056 { aspect-ratio: 0.56; --ratio: 0.56; }   /* Tony Nieve reel, 720 × 1280 */
 
 /* ==========================================================================
    MOTION

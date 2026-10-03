@@ -23,8 +23,9 @@ en/…                               /en/…  (English: the same 9 pages, same s
 css/tokens.css    colour tokens, text styles, link styles
 css/base.css      reset, layout template, navigation, footer, motion
 css/pages.css     per-page layout at all four breakpoints
-js/site.js        menu, language switch, scroll reveals, auto-fit type
-public/images/    38 project images
+js/site.js        menu, language switch, scroll reveals, auto-fit type, carousel
+public/images/    38 project images (+ tony-nieve/: the 8 carousel compositions)
+public/video/     Tony Nieve reel
 favicon.svg
 ```
 

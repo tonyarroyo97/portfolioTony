@@ -113,6 +113,30 @@
   .p-lrow__list  { flex: none; width: 100%; }
 }
 
+/* Grouped list item (Tools, Equipment): muted group label, then one line
+   per entry. Groups sit 26px apart through the list's own gap. */
+.p-lrow__item--group { gap: 8px; }
+
+/* --- Social icon row: Instagram + LinkedIn (/contact, /about, /cv) -------- */
+/* 24px Phosphor line icons; the 1px vertical padding makes the row 26px tall,
+   one line of Body. Hover is opacity only (Framer's default scale reset). */
+.social {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 1px 0;
+  width: max-content;
+}
+.social__link {
+  display: flex;
+  color: var(--ink);
+  transition: opacity 0.3s cubic-bezier(0.44, 0, 0.56, 1);
+}
+.social__link svg { display: block; width: 24px; height: 24px; }
+@media (hover: hover) { .social__link:hover { opacity: 0.55; } }
+.social__link:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
+
 
 /* ==========================================================================
    HOME  —  /   (Framer WebPageNode #augiA20Il)
@@ -333,6 +357,8 @@
   white-space: nowrap;
 }
 
+/* The closing "Índice / Ver proyectos" row was removed; its bottom padding
+   moved here so the space before the footer stays the same. */
 .contact-rule {
   border-top: 1px solid var(--rule);
   display: flex;
@@ -340,7 +366,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   gap: 26px;
-  padding: 72px 0 0 0;
+  padding: 72px 0 150px 0;
 }
 .contact-field {
   display: flex;
@@ -352,29 +378,26 @@
   min-width: 0;
 }
 .contact-field > * { width: 100%; }   /* Framer: width "1fr" */
-.contact-closing { padding: 150px 0 150px 0; }
 
 @media (min-width: 1024px) and (max-width: 1199.98px) {
   .contact-opening { padding-top: 207px; }
   .contact-statement { font-size: 275px; }
-  .contact-rule { padding-top: 65px; }
-  .contact-closing { padding: 132px 0 132px 0; }
+  .contact-rule { padding: 65px 0 132px 0; }
 }
 @media (min-width: 810px) and (max-width: 1023.98px) {
   .contact-opening { padding-top: 138px; }
   .contact-statement { font-size: 217px; }
-  .contact-rule { padding-top: 43px; }
-  .contact-closing { padding: 108px 0 108px 0; }
+  .contact-rule { padding: 43px 0 108px 0; }
 }
 @media (max-width: 809.98px) {
   /* NOTE — reproduced exactly as authored in Framer: on the Phone breakpoint
-     the Opening and Rule sections have NO padding at all, and the three
-     contact fields stay in a single horizontal row. See codeAdapted.md
-     § "Things worth knowing" for the one-line fixes if you want them. */
+     the Opening section has NO padding and the Rule section only a bottom
+     one, and the three contact fields stay in a single horizontal row. See
+     codeAdapted.md § "Things worth knowing" for the one-line fixes if you
+     want them. */
   .contact-opening { padding: 0; }
   .contact-statement { font-size: 101px; }
-  .contact-rule { padding: 0; }
-  .contact-closing { padding: 75px 0 75px 0; }
+  .contact-rule { padding: 0 0 75px 0; }
 }
 
 
@@ -438,25 +461,17 @@
   .pd-text__body { flex: none; width: 100%; max-width: none; }
 }
 
-/* Each project page ships two Intro copies: Framer stores a different,
-   shorter "Concepto" text on the Phone breakpoint. */
-.pd-copy--phone { display: none; }
-@media (max-width: 809.98px) {
-  .pd-copy--wide  { display: none; }
-  .pd-copy--phone { display: block; }
-}
-
 /* --- Gallery -------------------------------------------------------------- */
+/* One aligned grid on every project page: a stack of rows, each either one
+   full-width image or a justified row. Gutters equal the page side padding
+   (--gutter: 26 / 24 / 20 / 16px), horizontally and vertically. */
 .pd-gallery {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 90px;
+  gap: var(--gutter);
 }
-@media (min-width: 1024px) and (max-width: 1199.98px) { .pd-gallery { gap: 80px; } }
-@media (min-width:  810px) and (max-width: 1023.98px) { .pd-gallery { gap: 68px; } }
-@media (max-width: 809.98px)                          { .pd-gallery { gap: 52px; } }
 
 .pd-full {
   display: flex;
@@ -464,39 +479,23 @@
   position: relative;
   width: 100%;
 }
+/* Justified row: every item grows in proportion to its own aspect ratio
+   (--ratio, set by the .ar-* class) from a zero basis, so all items in a row
+   end up exactly the same height at any width. */
 .pd-row {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 26px;
+  gap: var(--gutter);
   position: relative;
   width: 100%;
 }
-.pd-col {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  flex: 1 1 0%;
-  min-width: 0;
-}
+.pd-row > * { flex: var(--ratio, 1) 1 0%; min-width: 0; }
 @media (max-width: 809.98px) {
   .pd-row { flex-direction: column; }
-  /* Every staggered column offset is dropped on Phone. */
-  .pd-col { flex: none; width: 100%; padding-top: 0 !important; }
+  .pd-row > * { flex: none; width: 100%; }
 }
-
-/* Single centred / aligned image block */
-.pd-narrow {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  position: relative;
-  width: 100%;
-}
-.pd-narrow--center { justify-content: center; }
-.pd-narrow--start  { justify-content: flex-start; }
-.pd-narrow--end    { justify-content: flex-end; }
 
 /* Image + caption block (metamorfosis, love-packaging) */
 .pd-imgtext {
@@ -552,32 +551,6 @@
    `max-width:100%` is added so narrower phones cannot overflow.
    ========================================================================== */
 
-/* --- /projects/tony-nieve ------------------------------------------------- */
-.fx-tn-square1 { width: 700px; aspect-ratio: 700 / 697; }   /* Narrow, centred */
-.fx-tn-tall    { width: 520px; aspect-ratio: 520 / 650; }   /* Narrow, right   */
-.fx-tn-square2 { width: 760px; aspect-ratio: 760 / 760; }   /* Narrow, left    */
-@media (min-width: 1024px) and (max-width: 1199.98px) {
-  .fx-tn-square1 { width: 595px; }
-  .fx-tn-tall    { width: 442px; }
-  .fx-tn-square2 { width: 646px; }
-}
-@media (min-width: 810px) and (max-width: 1023.98px) {
-  .fx-tn-square1 { width: 470px; }
-  .fx-tn-tall    { width: 349px; }
-  .fx-tn-square2 { width: 510px; }
-}
-@media (max-width: 809.98px) {
-  .fx-tn-square1 { width: 358px; max-width: 100%; }
-  .fx-tn-tall    { width: 358px; max-width: 100%; }
-  .fx-tn-square2 { width: 358px; max-width: 100%; }
-}
-
-/* --- /projects/matchflix -------------------------------------------------- */
-.fx-mf-wide { width: 860px; aspect-ratio: 860 / 645; }
-@media (min-width: 1024px) and (max-width: 1199.98px) { .fx-mf-wide { width: 731px; } }
-@media (min-width:  810px) and (max-width: 1023.98px) { .fx-mf-wide { width: 577px; } }
-@media (max-width: 809.98px) { .fx-mf-wide { width: 358px; max-width: 100%; } }
-
 /* --- /projects/metamorfosis ----------------------------------------------- */
 .fx-mt-piece { width: 420px; aspect-ratio: 420 / 630; }
 @media (min-width: 1024px) and (max-width: 1199.98px) { .fx-mt-piece { width: 357px; } }
@@ -592,29 +565,93 @@
 
 
 /* ==========================================================================
-   STAGGERED COLUMN OFFSETS inside project galleries
-   (Framer stores a padding-top on one column of a Row to offset it.)
+   TONY NIEVE COMPOSITION CAROUSEL  (Framer code component CompositionCarousel)
+   One composition at a time, never cropped: each image is centred in a fixed
+   frame with object-fit: contain. Native horizontal scroll with snap gives
+   touch swipe; js/site.js adds the arrows, dots and arrow keys.
    ========================================================================== */
-.off-90  { padding-top: 90px;  }
-.off-80  { padding-top: 80px;  }
-.off-110 { padding-top: 110px; }
-.off-120 { padding-top: 120px; }
-.off-70  { padding-top: 70px;  }
+.tn-carousel {
+  --carousel-ratio: 1.8;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--ink);
+}
+@media (min-width: 810px) and (max-width: 1023.98px) { .tn-carousel { --carousel-ratio: 1.4; } }
+@media (max-width: 809.98px) { .tn-carousel { --carousel-ratio: 1; } }
 
-@media (min-width: 1024px) and (max-width: 1199.98px) {
-  .off-90  { padding-top: 81px;  }
-  .off-80  { padding-top: 72px;  }
-  .off-110 { padding-top: 99px;  }
-  .off-120 { padding-top: 108px; }
-  .off-70  { padding-top: 63px;  }
+.tn-carousel__track {
+  display: flex;
+  width: 100%;
+  aspect-ratio: var(--carousel-ratio);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  outline: none;
 }
-@media (min-width: 810px) and (max-width: 1023.98px) {
-  .off-90  { padding-top: 54px; }
-  .off-80  { padding-top: 48px; }
-  .off-110 { padding-top: 66px; }
-  .off-120 { padding-top: 72px; }
-  .off-70  { padding-top: 42px; }
+.tn-carousel__track::-webkit-scrollbar { display: none; }
+.tn-carousel__slide {
+  flex: 0 0 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
+.tn-carousel__slide img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+}
+
+.tn-carousel__controls { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.tn-carousel__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+.tn-carousel__arrow:disabled { opacity: 0.25; cursor: default; }
+@media (hover: hover) { .tn-carousel__arrow:not(:disabled):hover { opacity: 0.55; } }
+.tn-carousel__dots { display: flex; align-items: center; gap: 2px; }
+.tn-carousel__dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.tn-carousel__dot span {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rule);
+  transition: background 0.3s ease;
+}
+.tn-carousel__dot[aria-current="true"] span { background: var(--ink); }
+.tn-carousel__arrow:focus-visible,
+.tn-carousel__dot:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
 
 
 /* ==========================================================================

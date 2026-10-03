@@ -8,6 +8,7 @@
    4. appearEffect  — fade + rise when a block scrolls into view
    5. textEffect    — per-word reveal on the page titles
    6. Contact page  — Framer's fontSize: auto-fit(100%) on "Hablemos"
+   7. Tony Nieve    — composition carousel controls (arrows, dots, keys)
 
    Everything here is progressive enhancement: with JavaScript disabled the
    page is fully readable, nothing stays hidden, and only the motion is lost.
@@ -217,6 +218,88 @@
     });
   }
 
+  /* ------------------------------------------------------------------------
+     7. CAROUSEL — Framer code component CompositionCarousel (/projects/tony-nieve)
+
+     The slides are plain markup in a horizontally scrolling, snapping track,
+     so swipe works without JavaScript. This adds the ‹ dots › controls and
+     ← / → keys. The active slide is read back from the track's own scroll
+     position, so swipe, arrows and dots stay in sync. No autoplay, no loop.
+     Labels come from data-label-previous / -next / -slide on the root.
+     ------------------------------------------------------------------------ */
+  function initCarousels() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-carousel]'), function (root) {
+      var track = root.querySelector('.tn-carousel__track');
+      if (!track) return;
+      var count = track.children.length;
+      if (count < 2) return;
+
+      var index = 0;
+      var chevron = function (d) {
+        return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+          'stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="' + d + '"/></svg>';
+      };
+      var button = function (className, label, html) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = className;
+        b.setAttribute('aria-label', label);
+        b.innerHTML = html;
+        return b;
+      };
+
+      var controls = document.createElement('div');
+      controls.className = 'tn-carousel__controls';
+      var prev = button('tn-carousel__arrow', root.getAttribute('data-label-previous'), chevron('M15 5l-7 7 7 7'));
+      var next = button('tn-carousel__arrow', root.getAttribute('data-label-next'), chevron('M9 5l7 7-7 7'));
+      var dotsWrap = document.createElement('div');
+      dotsWrap.className = 'tn-carousel__dots';
+      var dots = [];
+      for (var i = 0; i < count; i++) {
+        var dot = button('tn-carousel__dot', root.getAttribute('data-label-slide') + ' ' + (i + 1), '<span></span>');
+        dot.addEventListener('click', goTo.bind(null, i));
+        dotsWrap.appendChild(dot);
+        dots.push(dot);
+      }
+      controls.appendChild(prev);
+      controls.appendChild(dotsWrap);
+      controls.appendChild(next);
+      root.appendChild(controls);
+
+      function goTo(n) {
+        var clamped = Math.max(0, Math.min(count - 1, n));
+        track.scrollTo({ left: clamped * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+      function update() {
+        prev.disabled = index <= 0;
+        next.disabled = index >= count - 1;
+        dots.forEach(function (d, i) {
+          if (i === index) d.setAttribute('aria-current', 'true');
+          else d.removeAttribute('aria-current');
+        });
+      }
+
+      prev.addEventListener('click', function () { goTo(index - 1); });
+      next.addEventListener('click', function () { goTo(index + 1); });
+      track.addEventListener('scroll', function () {
+        if (!track.clientWidth) return;
+        var n = Math.round(track.scrollLeft / track.clientWidth);
+        if (n !== index) { index = n; update(); }
+      }, { passive: true });
+      root.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(index - 1); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); goTo(index + 1); }
+      });
+      // Keep the current slide in place when the width changes.
+      window.addEventListener('resize', function () {
+        track.scrollTo({ left: index * track.clientWidth });
+      });
+
+      update();
+    });
+  }
+
   /* ---------------------------------------------------------------------- */
   function init() {
     initNav();
@@ -225,6 +308,7 @@
     initReveals();
     initTextReveal();
     initAutoFit();
+    initCarousels();
   }
 
   if (document.readyState === 'loading') {
