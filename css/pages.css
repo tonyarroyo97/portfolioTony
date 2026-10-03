@@ -167,11 +167,14 @@
    PROJECTS INDEX  —  /projects   (Framer WebPageNode #hue5hEArH)
    ========================================================================== */
 
+/* Same grid, card and image rules as the Home grid (.home-work / .home-card).
+   Only the bottom padding differs: Projects has no closing row, so the grid
+   keeps its own space before the footer. */
 .projects-index {
   display: grid;
-  grid-template-columns: repeat(2, minmax(240px, 1fr));
-  align-items: start;                  /* Framer gridAlignment: start */
-  gap: 130px 26px;
+  grid-template-columns: repeat(2, minmax(50px, 1fr));
+  align-items: center;                 /* Framer gridAlignment: center */
+  gap: 20px 12px;
   padding: 54px 0 150px 0;
 }
 .projects-index__item {
@@ -179,10 +182,9 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 12px;
+  gap: 8px;
   position: relative;
-  flex: 1 1 0%;
-  min-width: 0;
+  width: 100%;
 }
 .projects-index__meta {
   display: flex;
@@ -193,16 +195,11 @@
   width: 100%;
 }
 
-/* The staggered "masonry" look: items 2 and 4 are pushed down. */
-.projects-index__item--offset { padding-top: 130px; }
-
 @media (min-width: 1024px) and (max-width: 1199.98px) {
   .projects-index { padding: 48px 0 132px 0; }
-  .projects-index__item--offset { padding-top: 117px; }
 }
 @media (min-width: 810px) and (max-width: 1023.98px) {
-  .projects-index { padding: 39px 0 108px 0; }
-  .projects-index__item--offset { padding-top: 78px; }
+  .projects-index { gap: 18px 12px; padding: 39px 0 108px 0; }
 }
 @media (max-width: 809.98px) {
   /* Framer switches this section from a grid to a vertical stack on Phone. */
@@ -211,11 +208,9 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 90px;
+    gap: 26px;
     padding: 27px 0 75px 0;
   }
-  .projects-index__item { flex: none; width: 100%; }
-  .projects-index__item--offset { padding-top: 0; }
 }
 
 
