@@ -714,10 +714,10 @@
 @media (min-width:  810px) and (max-width: 1023.98px) { .pd-text--closing-short { padding: 79px 0 32px 0; } }
 @media (max-width: 809.98px)                          { .pd-text--closing-short { padding: 55px 0 24px 0; } }
 
-/* Metamorfosis stages: «01 · Conceptualización» does not fit a 114px column,
-   so on Tablet the label goes above the text (as on Phone), and on Laptop it
-   keeps the Desktop 170px. --label: label only, --first: text only, followed
-   straight by the next stage. */
+/* Metamorfosis and Matchaflix stages: «01 · Conceptualización» does not fit
+   a 114px column, so on Tablet the label goes above the text (as on Phone),
+   and on Laptop it keeps the Desktop 170px. --label: label only, --first:
+   text only, followed straight by the next stage. */
 .pd-stage { padding: 110px 0 64px 0; }
 .pd-stage--label { padding-bottom: 40px; }
 .pd-stage--first { padding-bottom: 0; }
@@ -802,6 +802,50 @@
 @media (min-width: 1024px) and (max-width: 1199.98px) { .pd-end { padding-bottom: 97px; } }
 @media (min-width:  810px) and (max-width: 1023.98px) { .pd-end { padding-bottom: 79px; } }
 @media (max-width: 809.98px)                          { .pd-end { padding-bottom: 55px; } }
+
+/* Matchaflix: the 02 logo carousel stays below 1100px, and the palette gets a
+   hairline so its cream swatch doesn't vanish into the page background. */
+.mf-logos { max-width: 1100px; }
+.mf-palette { border: 1px solid var(--rule); overflow: hidden; }
+
+/* Split block (Matchaflix 04 and 05): text beside media, 1 : 1.6, bottom
+   aligned. On Tablet and Phone it stacks with the text first. The 04 text
+   sits higher by the height of the carousel controls under its media. */
+.pd-split {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--gutter);
+  padding: 110px 0 0 0;
+}
+.pd-split__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+.pd-split__text .ts-editorial-note { max-width: 560px; }
+.pd-split__media { flex: 1.6 1 0%; min-width: 0; }
+.pd-split--graphic .pd-split__text { padding-bottom: 78px; }   /* 26 + 20 gap + 32 arrows */
+.pd-split--pattern .pd-split__text { padding-bottom: 26px; }
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .pd-split { padding-top: 97px; }
+  .pd-split--graphic .pd-split__text { padding-bottom: 75px; }
+  .pd-split--pattern .pd-split__text { padding-bottom: 23px; }
+}
+@media (max-width: 1023.98px) {
+  .pd-split { flex-direction: column; align-items: flex-start; gap: 46px; padding-top: 79px; }
+  .pd-split__text, .pd-split__media { flex: none; width: 100%; }
+  .pd-split--graphic .pd-split__text,
+  .pd-split--pattern .pd-split__text { padding-bottom: 0; }
+  .pd-split__text .ts-editorial-note { max-width: 760px; }
+  .pd-split--pattern .pd-split__text { order: -1; }
+}
+@media (max-width: 809.98px) {
+  .pd-split { gap: 32px; padding-top: 55px; }
+}
 
 /* Tony Nieve compositions: frame ratio per breakpoint. */
 .pd-compositions { --carousel-ratio: 1.8; }
@@ -1059,6 +1103,9 @@
 }
 .tn-carousel__dot[aria-current="true"] span { background: var(--ink); }
 .tn-carousel__counter { min-width: 56px; text-align: center; font-variant-numeric: tabular-nums; }
+/* data-indicator="none": the active slide's name between the arrows, wide
+   enough that the arrows don't move when it changes. */
+.tn-carousel__name { min-width: 88px; text-align: center; color: var(--ink-muted); }
 @media (hover: hover) {
   .tn-carousel__arrow:not(:disabled):hover,
   .tn-carousel__reveal:hover,

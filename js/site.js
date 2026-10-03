@@ -248,9 +248,11 @@
      The slides are plain markup in a horizontally scrolling, snapping track,
      so the images show and swipe works without JavaScript. This adds:
        - a lightbox trigger around every image (and the reveal video);
-       - for a series, ‹ dots › (a counter above 10) and ← / → keys — the
-         active slide is read back from the track's scroll position, so
-         swipe, arrows, dots and keys stay in sync. No autoplay, no loop;
+       - for a series, ‹ dots › (a counter above 10; arrows only, with the
+         slide name between them, for data-indicator="none") and ← / →
+         keys — the active slide is read back from the track's scroll
+         position, so swipe, arrows, dots and keys stay in sync. No
+         autoplay, no loop;
        - for data-mode="reveal", the «Ver proceso» toggle that crossfades to
          the process video, which plays muted from the start while shown,
          on screen and not covered by the lightbox;
@@ -304,13 +306,24 @@
   }
 
   // ‹ dots › controls; labelHost is the carousel the labels are read from.
+  // With data-indicator="none" on it, only the arrows show, with the active
+  // slide's data-name (if the slides have one) between them.
   function buildControls(labelHost, count, goTo) {
     var el = document.createElement('div');
     el.className = 'tn-carousel__controls';
     var prev = makeButton('tn-carousel__arrow', labelFor(labelHost, 'previous'), chevron('M15 5l-7 7 7 7'));
     var next = makeButton('tn-carousel__arrow', labelFor(labelHost, 'next'), chevron('M9 5l7 7-7 7'));
-    var index = 0, dots = [], counter = null, middle;
-    if (count > MAX_DOTS) {
+    var names = Array.prototype.map.call(labelHost.querySelectorAll('.tn-carousel__slide'), function (slide) {
+      return slide.getAttribute('data-name') || '';
+    });
+    var index = 0, dots = [], counter = null, name = null, middle = null;
+    if (labelHost.getAttribute('data-indicator') === 'none') {
+      if (names.some(Boolean)) {
+        middle = name = document.createElement('span');
+        name.className = 'tn-carousel__name ts-label';
+        name.setAttribute('aria-live', 'polite');
+      }
+    } else if (count > MAX_DOTS) {
       middle = counter = document.createElement('span');
       counter.className = 'tn-carousel__counter ts-label';
       counter.setAttribute('aria-live', 'polite');
@@ -327,7 +340,7 @@
     prev.addEventListener('click', function () { goTo(index - 1); });
     next.addEventListener('click', function () { goTo(index + 1); });
     el.appendChild(prev);
-    el.appendChild(middle);
+    if (middle) el.appendChild(middle);
     el.appendChild(next);
 
     function update(i) {
@@ -335,6 +348,7 @@
       prev.disabled = i <= 0;
       next.disabled = i >= count - 1;
       if (counter) counter.textContent = pad(i + 1) + ' / ' + pad(count);
+      if (name) name.textContent = names[i];
       dots.forEach(function (d, k) {
         if (k === i) d.setAttribute('aria-current', 'true');
         else d.removeAttribute('aria-current');

@@ -27,7 +27,8 @@ js/site.js        menu, language switch, scroll reveals, auto-fit type,
                   carousels, accordions
 public/images/    38 project images (+ tony-nieve/: the 8 carousel compositions,
                   menciones/: the 22 About mention images,
-                  metamorfosis/: collage and photoshoot images)
+                  metamorfosis/: collage and photoshoot images,
+                  matchaflix/: identity images for the 7 stages)
 public/video/     Tony Nieve reel, Metamorfosis illustration process videos
 favicon.svg
 ```
