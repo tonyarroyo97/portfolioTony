@@ -364,6 +364,11 @@
 .about-acc__group { display: flex; flex-direction: column; gap: 8px; }
 .about-acc__group--loose { gap: 26px; }
 .about-acc__item { display: flex; flex-direction: column; gap: 4px; }
+/* Complementary training (Education › «Talleres y cursos»): Body Small
+   throughout, title in Ink with its muted note right under it. */
+.about-acc__group--compact { gap: 10px; }
+.about-acc__group--compact .about-acc__item { gap: 0; }
+.about-acc__group--compact .about-acc__item > p:first-child { color: var(--ink); }
 
 @media (min-width: 1024px) and (max-width: 1199.98px) { .about-acc { --acc-indent: 171px; } }
 @media (min-width:  810px) and (max-width: 1023.98px) { .about-acc { --acc-indent: 140px; } }
@@ -703,6 +708,46 @@
   .pd-text__body { flex: none; width: 100%; max-width: none; }
 }
 
+/* Spacing presets (top / bottom). The default above is "full". */
+.pd-text--closing-short { padding: 110px 0 44px 0; }   /* Tony Nieve «Composiciones» */
+@media (min-width: 1024px) and (max-width: 1199.98px) { .pd-text--closing-short { padding: 97px 0 39px 0; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .pd-text--closing-short { padding: 79px 0 32px 0; } }
+@media (max-width: 809.98px)                          { .pd-text--closing-short { padding: 55px 0 24px 0; } }
+
+/* Metamorfosis stages: «01 · Conceptualización» does not fit a 114px column,
+   so on Tablet the label goes above the text (as on Phone), and on Laptop it
+   keeps the Desktop 170px. --label: label only, --first: text only, followed
+   straight by the next stage. */
+.pd-stage { padding: 110px 0 64px 0; }
+.pd-stage--label { padding-bottom: 40px; }
+.pd-stage--first { padding-bottom: 0; }
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .pd-stage { padding: 97px 0 56px 0; }
+  .pd-stage--label { padding-bottom: 35px; }
+  .pd-stage--first { padding-bottom: 0; }
+  .pd-stage .pd-text__label { width: 170px; }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .pd-stage { flex-direction: column; gap: 14px; padding: 79px 0 46px 0; }
+  .pd-stage--label { padding-bottom: 28px; }
+  .pd-stage--first { padding-bottom: 0; }
+  .pd-stage .pd-text__label { width: auto; }
+  .pd-stage .pd-text__body { flex: none; width: 100%; }
+}
+@media (max-width: 809.98px) {
+  .pd-stage { padding: 55px 0 32px 0; }
+  .pd-stage--label { padding-bottom: 20px; }
+  .pd-stage--first { padding-bottom: 0; }
+}
+
+/* Tony Nieve: one-line pauses between the four atmospheres of the gallery,
+   indented to the text column. */
+.pd-pause { width: 100%; padding: 84px 0 58px 196px; }
+.pd-pause > p { max-width: 620px; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .pd-pause { padding: 74px 0 50px 171px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .pd-pause { padding: 64px 0 40px 140px; } }
+@media (max-width: 809.98px)                          { .pd-pause { padding: 40px 0 24px 0; } }
+
 /* --- Gallery -------------------------------------------------------------- */
 /* One aligned grid on every project page: a stack of rows, each either one
    full-width image or a justified row. Gutters equal the page side padding
@@ -739,13 +784,37 @@
   .pd-row > * { flex: none; width: 100%; }
 }
 
-/* Image + caption block (metamorfosis, love-packaging) */
+/* Rows that start at the text column instead of the page edge. */
+.pd-row--indented { padding-left: 196px; }
+.pd-row > .pd-w70 { flex: 0 0 70%; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .pd-row--indented { padding-left: 171px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .pd-row--indented { padding-left: 140px; } }
+@media (max-width: 809.98px) {
+  .pd-row--indented { padding-left: 0; }
+  .pd-row > .pd-w70 { flex: none; width: 100%; }
+  .pd-gallery--loose-phone { gap: 40px; }   /* Metamorfosis 04: room for «Ver proceso» */
+}
+
+/* Last block before «Siguiente proyecto» when it isn't a text section
+   (Tony Nieve compositions, Matchaflix gallery): the same space a closing
+   text section leaves before the rule. */
+.pd-end { padding-bottom: 110px; }
+@media (min-width: 1024px) and (max-width: 1199.98px) { .pd-end { padding-bottom: 97px; } }
+@media (min-width:  810px) and (max-width: 1023.98px) { .pd-end { padding-bottom: 79px; } }
+@media (max-width: 809.98px)                          { .pd-end { padding-bottom: 55px; } }
+
+/* Tony Nieve compositions: frame ratio per breakpoint. */
+.pd-compositions { --carousel-ratio: 1.8; }
+@media (min-width: 810px) and (max-width: 1023.98px) { .pd-compositions { --carousel-ratio: 1.4; } }
+@media (max-width: 809.98px)                          { .pd-compositions { --carousel-ratio: 1; } }
+
+/* Image + text block (Love «El reto») */
 .pd-imgtext {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-end;
-  gap: 26px;
+  gap: var(--gutter);
   position: relative;
   width: 100%;
 }
@@ -782,6 +851,50 @@
 @media (min-width:  810px) and (max-width: 1023.98px) { .pd-next { padding: 108px 0 108px 0; } }
 @media (max-width: 809.98px)                          { .pd-next { padding:  75px 0  75px 0; } }
 
+/* --- Metamorfosis 08 · TFG presentation ------------------------------------ */
+/* Photo (a link to the defence video) + label, one sentence and a link. */
+.pd-tfg {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--gutter);
+  padding: 110px 0 110px 0;
+}
+.pd-tfg__image { display: block; flex: 0 0 560px; aspect-ratio: 0.75; overflow: clip; }
+.pd-tfg__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (hover: hover) { .pd-tfg__image:hover img { transform: scale(1.02); } }
+.pd-tfg__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1 1 0%;
+  min-width: 0;
+  padding-bottom: 26px;
+}
+.pd-tfg__text .ts-editorial-note { max-width: 560px; }
+@media (min-width: 1024px) and (max-width: 1199.98px) {
+  .pd-tfg { padding: 97px 0 97px 0; }
+  .pd-tfg__image { flex-basis: 480px; }
+  .pd-tfg__text { padding-bottom: 23px; }
+}
+@media (min-width: 810px) and (max-width: 1023.98px) {
+  .pd-tfg { padding: 79px 0 79px 0; }
+  .pd-tfg__image { flex-basis: 360px; }
+  .pd-tfg__text { padding-bottom: 19px; }
+}
+@media (max-width: 809.98px) {
+  .pd-tfg { flex-direction: column; align-items: flex-start; gap: 20px; padding: 55px 0 55px 0; }
+  .pd-tfg__image { flex: none; width: 100%; }
+  .pd-tfg__text { flex: none; width: 100%; padding-bottom: 0; }
+}
+
 
 /* ==========================================================================
    FIXED-SIZE IMAGE FRAMES
@@ -793,12 +906,6 @@
    `max-width:100%` is added so narrower phones cannot overflow.
    ========================================================================== */
 
-/* --- /projects/metamorfosis ----------------------------------------------- */
-.fx-mt-piece { width: 420px; aspect-ratio: 420 / 630; }
-@media (min-width: 1024px) and (max-width: 1199.98px) { .fx-mt-piece { width: 357px; } }
-@media (min-width:  810px) and (max-width: 1023.98px) { .fx-mt-piece { width: 282px; } }
-@media (max-width: 809.98px) { .fx-mt-piece { width: 100%; } }
-
 /* --- /projects/love-packaging --------------------------------------------- */
 .fx-lp-piece { width: 620px; aspect-ratio: 620 / 930; }
 @media (min-width: 1024px) and (max-width: 1199.98px) { .fx-lp-piece { width: 527px; } }
@@ -807,13 +914,21 @@
 
 
 /* ==========================================================================
-   TONY NIEVE COMPOSITION CAROUSEL  (Framer code component CompositionCarousel)
-   One composition at a time, never cropped: each image is centred in a fixed
-   frame with object-fit: contain. Native horizontal scroll with snap gives
-   touch swipe; js/site.js adds the arrows, dots and arrow keys.
+   PROJECT IMAGE CAROUSEL  (Framer code component CompositionCarousel)
+   One component for every clickable image on the project pages:
+     - one slide            a single photo in its frame
+     - several slides       a series: native scroll snap gives swipe;
+                            js/site.js adds ‹ dots › (a counter above 10)
+     - data-mode="reveal"   an illustration whose process video fades in
+                            in place («Ver proceso»), no arrows or dots
+   Clicking an image opens the fullscreen lightbox (js/site.js).
+   The frame ratio is --carousel-ratio when a parent sets it (the Tony Nieve
+   compositions change it per breakpoint), otherwise the item's own --ratio,
+   which also sizes it inside a justified .pd-row.
+   data-fit="cover" fills the frame; the default never crops. Videos are
+   always contained.
    ========================================================================== */
 .tn-carousel {
-  --carousel-ratio: 1.8;
   position: relative;
   width: 100%;
   display: flex;
@@ -821,13 +936,11 @@
   gap: 20px;
   color: var(--ink);
 }
-@media (min-width: 810px) and (max-width: 1023.98px) { .tn-carousel { --carousel-ratio: 1.4; } }
-@media (max-width: 809.98px) { .tn-carousel { --carousel-ratio: 1; } }
 
 .tn-carousel__track {
   display: flex;
   width: 100%;
-  aspect-ratio: var(--carousel-ratio);
+  aspect-ratio: var(--carousel-ratio, var(--ratio, 1));
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
@@ -842,10 +955,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
-.tn-carousel__slide img {
+.tn-carousel__slide img,
+.tn-carousel__slide video {
   display: block;
   max-width: 100%;
   max-height: 100%;
@@ -854,7 +969,59 @@
   object-fit: contain;
   user-select: none;
 }
+.tn-carousel[data-fit="cover"] .tn-carousel__slide img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+}
 
+/* Lightbox trigger wrapped around each image by js/site.js */
+.tn-carousel__open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+.tn-carousel__open img { transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+@media (hover: hover) { .tn-carousel__open:hover img { transform: scale(1.02); } }
+
+/* Reveal: image and video stacked in one frame, crossfading over 0.5s.
+   Without JavaScript only the image shows. */
+.tn-carousel[data-mode="reveal"] .tn-carousel__track { position: relative; overflow: hidden; scroll-snap-type: none; }
+.tn-carousel[data-mode="reveal"] .tn-carousel__slide {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.5s cubic-bezier(0.44, 0, 0.56, 1);
+}
+.tn-carousel[data-mode="reveal"] .tn-carousel__slide[data-kind="video"],
+.tn-carousel.is-video .tn-carousel__slide:not([data-kind="video"]) { opacity: 0; pointer-events: none; }
+.tn-carousel.is-video .tn-carousel__slide[data-kind="video"] { opacity: 1; pointer-events: auto; }
+.tn-carousel__reveal {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+.tn-carousel__reveal svg { display: block; }
+
+/* Controls (inline series and lightbox) */
 .tn-carousel__controls { display: flex; align-items: center; justify-content: center; gap: 12px; }
 .tn-carousel__arrow {
   display: flex;
@@ -870,7 +1037,6 @@
   transition: opacity 0.3s ease;
 }
 .tn-carousel__arrow:disabled { opacity: 0.25; cursor: default; }
-@media (hover: hover) { .tn-carousel__arrow:not(:disabled):hover { opacity: 0.55; } }
 .tn-carousel__dots { display: flex; align-items: center; gap: 2px; }
 .tn-carousel__dot {
   display: flex;
@@ -892,8 +1058,87 @@
   transition: background 0.3s ease;
 }
 .tn-carousel__dot[aria-current="true"] span { background: var(--ink); }
+.tn-carousel__counter { min-width: 56px; text-align: center; font-variant-numeric: tabular-nums; }
+@media (hover: hover) {
+  .tn-carousel__arrow:not(:disabled):hover,
+  .tn-carousel__reveal:hover,
+  .tn-lightbox__close:hover { opacity: 0.55; }
+}
 .tn-carousel__arrow:focus-visible,
-.tn-carousel__dot:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
+.tn-carousel__dot:focus-visible,
+.tn-carousel__open:focus-visible,
+.tn-carousel__reveal:focus-visible,
+.tn-lightbox__close:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
+
+/* Fullscreen lightbox on the page background, built by js/site.js */
+.tn-lightbox {
+  --lb-pad: 48px;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.35s cubic-bezier(0.44, 0, 0.56, 1);
+}
+.tn-lightbox.is-visible { opacity: 1; }
+.tn-lightbox__bar {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 56px;
+  padding: 0 var(--lb-pad);
+}
+.tn-lightbox__close {
+  padding: 12px 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+.tn-lightbox__track {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  outline: none;
+}
+.tn-lightbox__track::-webkit-scrollbar { display: none; }
+.tn-lightbox__slide {
+  flex: 0 0 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--lb-pad);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.tn-lightbox__slide img,
+.tn-lightbox__slide video {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+}
+.tn-lightbox__foot { flex: none; height: 64px; display: flex; align-items: center; justify-content: center; }
+@media (max-width: 809.98px) { .tn-lightbox { --lb-pad: 16px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .tn-carousel__open img, .tn-lightbox,
+  .tn-carousel[data-mode="reveal"] .tn-carousel__slide { transition: none !important; }
+}
 
 
 /* ==========================================================================

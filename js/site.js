@@ -8,7 +8,7 @@
    4. appearEffect  — fade + rise when a block scrolls into view
    5. textEffect    — per-word reveal on the page titles
    6. Contact page  — Framer's fontSize: auto-fit(100%) on the headline
-   7. Tony Nieve    — composition carousel controls (arrows, dots, keys)
+   7. Projects      — image carousels, «Ver proceso» reveal, fullscreen lightbox
    8. About         — accordions, one open at a time
    9. About         — mentions carousel controls (arrows, counter, keys)
 
@@ -222,84 +222,301 @@
   }
 
   /* ------------------------------------------------------------------------
-     7. CAROUSEL — Framer code component CompositionCarousel (/projects/tony-nieve)
+     Helpers shared by the carousels (7 and 9)
+     ------------------------------------------------------------------------ */
+  var MAX_DOTS = 10;   // above this, a «01 / 22» counter replaces the dots
+
+  function chevron(d) {
+    return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="' + d + '"/></svg>';
+  }
+  function makeButton(className, label, html) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = className;
+    if (label) b.setAttribute('aria-label', label);
+    b.innerHTML = html || '';
+    return b;
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  /* ------------------------------------------------------------------------
+     7. PROJECT CAROUSEL — Framer code component CompositionCarousel
+        (/projects/tony-nieve, /projects/matchflix, /projects/metamorfosis)
 
      The slides are plain markup in a horizontally scrolling, snapping track,
-     so swipe works without JavaScript. This adds the ‹ dots › controls and
-     ← / → keys. The active slide is read back from the track's own scroll
-     position, so swipe, arrows and dots stay in sync. No autoplay, no loop.
-     Labels come from data-label-previous / -next / -slide on the root.
+     so the images show and swipe works without JavaScript. This adds:
+       - a lightbox trigger around every image (and the reveal video);
+       - for a series, ‹ dots › (a counter above 10) and ← / → keys — the
+         active slide is read back from the track's scroll position, so
+         swipe, arrows, dots and keys stay in sync. No autoplay, no loop;
+       - for data-mode="reveal", the «Ver proceso» toggle that crossfades to
+         the process video, which plays muted from the start while shown,
+         on screen and not covered by the lightbox;
+       - the fullscreen lightbox: same series, swipe / arrows / ← → / Esc,
+         page scroll locked, focus trapped and returned on close.
+     Labels are read from the nearest data-label-* attribute (the shared
+     ones sit on <main>); a series' own name is its aria-label.
      ------------------------------------------------------------------------ */
+  function labelFor(el, name) {
+    var host = el.closest('[data-label-' + name + ']');
+    return host ? host.getAttribute('data-label-' + name) : '';
+  }
+  function altOf(media) {
+    return media.tagName === 'IMG' ? media.alt : (media.getAttribute('aria-label') || '');
+  }
+
+  // Plays from the start when it becomes active, pauses otherwise.
+  function setPlaying(video, on) {
+    if (!video || (video.dataset.playing === 'true') === on) return;
+    video.dataset.playing = on ? 'true' : 'false';
+    if (on) {
+      video.currentTime = 0;
+      var playing = video.play();
+      if (playing) playing.catch(function () {});
+    } else {
+      video.pause();
+    }
+  }
+
+  // Scroll-snap track whose active slide comes from its own scroll position.
+  function snapTrack(track, count, onChange) {
+    var index = 0;
+    function set(n) {
+      if (n !== index) { index = n; onChange(index); }
+    }
+    track.addEventListener('scroll', function () {
+      if (track.clientWidth) set(Math.round(track.scrollLeft / track.clientWidth));
+    }, { passive: true });
+    // Keep the current slide in place when the width changes.
+    window.addEventListener('resize', function () {
+      if (track.isConnected) track.scrollTo({ left: index * track.clientWidth });
+    });
+    return {
+      index: function () { return index; },
+      goTo: function (n, instant) {
+        var clamped = Math.max(0, Math.min(count - 1, n));
+        track.scrollTo({ left: clamped * track.clientWidth, behavior: instant || reduceMotion ? 'auto' : 'smooth' });
+        if (instant) set(clamped);
+      }
+    };
+  }
+
+  // ‹ dots › controls; labelHost is the carousel the labels are read from.
+  function buildControls(labelHost, count, goTo) {
+    var el = document.createElement('div');
+    el.className = 'tn-carousel__controls';
+    var prev = makeButton('tn-carousel__arrow', labelFor(labelHost, 'previous'), chevron('M15 5l-7 7 7 7'));
+    var next = makeButton('tn-carousel__arrow', labelFor(labelHost, 'next'), chevron('M9 5l7 7-7 7'));
+    var index = 0, dots = [], counter = null, middle;
+    if (count > MAX_DOTS) {
+      middle = counter = document.createElement('span');
+      counter.className = 'tn-carousel__counter ts-label';
+      counter.setAttribute('aria-live', 'polite');
+    } else {
+      middle = document.createElement('div');
+      middle.className = 'tn-carousel__dots';
+      for (var i = 0; i < count; i++) {
+        var dot = makeButton('tn-carousel__dot', labelFor(labelHost, 'slide') + ' ' + (i + 1), '<span></span>');
+        dot.addEventListener('click', goTo.bind(null, i, false));
+        middle.appendChild(dot);
+        dots.push(dot);
+      }
+    }
+    prev.addEventListener('click', function () { goTo(index - 1); });
+    next.addEventListener('click', function () { goTo(index + 1); });
+    el.appendChild(prev);
+    el.appendChild(middle);
+    el.appendChild(next);
+
+    function update(i) {
+      index = i;
+      prev.disabled = i <= 0;
+      next.disabled = i >= count - 1;
+      if (counter) counter.textContent = pad(i + 1) + ' / ' + pad(count);
+      dots.forEach(function (d, k) {
+        if (k === i) d.setAttribute('aria-current', 'true');
+        else d.removeAttribute('aria-current');
+      });
+    }
+    update(0);
+    return { el: el, update: update };
+  }
+
   function initCarousels() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-carousel]'), function (root) {
       var track = root.querySelector('.tn-carousel__track');
       if (!track) return;
-      var count = track.children.length;
-      if (count < 2) return;
+      var slides = Array.prototype.slice.call(track.children);
+      var media = slides.map(function (slide) { return slide.querySelector('img, video'); });
+      var count = slides.length;
+      var reveal = root.getAttribute('data-mode') === 'reveal';
+      var isCarousel = count > 1 && !reveal;
+      var triggers = [];
+      var nav = null, controls = null;
+      var video = null, toggle = null;
+      var showVideo = false, inView = false, lightboxOpen = false;
 
-      var index = 0;
-      var chevron = function (d) {
-        return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-          'stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          '<path d="' + d + '"/></svg>';
-      };
-      var button = function (className, label, html) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = className;
-        b.setAttribute('aria-label', label);
-        b.innerHTML = html;
-        return b;
-      };
+      // Every image (and the reveal video) opens the lightbox.
+      slides.forEach(function (slide, i) {
+        var open = labelFor(root, 'open');
+        var alt = altOf(media[i]);
+        var trigger = makeButton('tn-carousel__open', alt ? open + ': ' + alt : open);
+        trigger.setAttribute('aria-haspopup', 'dialog');
+        slide.insertBefore(trigger, media[i]);
+        trigger.appendChild(media[i]);
+        trigger.addEventListener('click', function () { openLightbox(i); });
+        triggers.push(trigger);
+      });
 
-      var controls = document.createElement('div');
-      controls.className = 'tn-carousel__controls';
-      var prev = button('tn-carousel__arrow', root.getAttribute('data-label-previous'), chevron('M15 5l-7 7 7 7'));
-      var next = button('tn-carousel__arrow', root.getAttribute('data-label-next'), chevron('M9 5l7 7-7 7'));
-      var dotsWrap = document.createElement('div');
-      dotsWrap.className = 'tn-carousel__dots';
-      var dots = [];
-      for (var i = 0; i < count; i++) {
-        var dot = button('tn-carousel__dot', root.getAttribute('data-label-slide') + ' ' + (i + 1), '<span></span>');
-        dot.addEventListener('click', goTo.bind(null, i));
-        dotsWrap.appendChild(dot);
-        dots.push(dot);
-      }
-      controls.appendChild(prev);
-      controls.appendChild(dotsWrap);
-      controls.appendChild(next);
-      root.appendChild(controls);
-
-      function goTo(n) {
-        var clamped = Math.max(0, Math.min(count - 1, n));
-        track.scrollTo({ left: clamped * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
-      }
-      function update() {
-        prev.disabled = index <= 0;
-        next.disabled = index >= count - 1;
-        dots.forEach(function (d, i) {
-          if (i === index) d.setAttribute('aria-current', 'true');
-          else d.removeAttribute('aria-current');
+      if (isCarousel) {
+        nav = snapTrack(track, count, function (i) { controls.update(i); });
+        controls = buildControls(root, count, nav.goTo);
+        root.appendChild(controls.el);
+        root.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); nav.goTo(nav.index() - 1); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); nav.goTo(nav.index() + 1); }
         });
       }
 
-      prev.addEventListener('click', function () { goTo(index - 1); });
-      next.addEventListener('click', function () { goTo(index + 1); });
-      track.addEventListener('scroll', function () {
-        if (!track.clientWidth) return;
-        var n = Math.round(track.scrollLeft / track.clientWidth);
-        if (n !== index) { index = n; update(); }
-      }, { passive: true });
-      root.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(index - 1); }
-        else if (e.key === 'ArrowRight') { e.preventDefault(); goTo(index + 1); }
-      });
-      // Keep the current slide in place when the width changes.
-      window.addEventListener('resize', function () {
-        track.scrollTo({ left: index * track.clientWidth });
-      });
+      if (reveal) {
+        video = track.querySelector('video');
+        toggle = makeButton('tn-carousel__reveal ts-label');
+        toggle.addEventListener('click', function () {
+          showVideo = !showVideo;
+          renderReveal();
+        });
+        root.appendChild(toggle);
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(function (entries) {
+            inView = entries[0].isIntersecting;
+            syncVideo();
+          }, { threshold: 0.4 }).observe(track);
+        } else {
+          inView = true;
+        }
+        renderReveal();
+      }
 
-      update();
+      function syncVideo() { setPlaying(video, showVideo && inView && !lightboxOpen); }
+
+      function renderReveal() {
+        root.classList.toggle('is-video', showVideo);
+        slides.forEach(function (slide, i) {
+          var visible = (slide.getAttribute('data-kind') === 'video') === showVideo;
+          slide.setAttribute('aria-hidden', visible ? 'false' : 'true');
+          triggers[i].tabIndex = visible ? 0 : -1;
+        });
+        toggle.setAttribute('aria-pressed', showVideo ? 'true' : 'false');
+        toggle.innerHTML = showVideo ? '' :
+          '<svg width="7" height="8" viewBox="0 0 7 8" aria-hidden="true"><path d="M0 0L7 4L0 8Z" fill="currentColor"/></svg>';
+        toggle.appendChild(document.createTextNode(labelFor(root, showVideo ? 'hide' : 'reveal')));
+        syncVideo();
+      }
+
+      function openLightbox(start) {
+        lightboxOpen = true;
+        syncVideo();
+
+        var dialog = document.createElement('div');
+        dialog.className = 'tn-lightbox';
+        dialog.setAttribute('role', 'dialog');
+        dialog.setAttribute('aria-modal', 'true');
+        dialog.setAttribute('aria-label', isCarousel ? root.getAttribute('aria-label') : altOf(media[start]));
+
+        var bar = document.createElement('div');
+        bar.className = 'tn-lightbox__bar';
+        var closeButton = makeButton('tn-lightbox__close ts-nav');
+        closeButton.textContent = '( ' + labelFor(root, 'close') + ' )';
+        bar.appendChild(closeButton);
+
+        var lightTrack = document.createElement('div');
+        lightTrack.className = 'tn-lightbox__track';
+        var copies = media.map(function (m, i) {
+          var slide = document.createElement('div');
+          slide.className = 'tn-lightbox__slide';
+          slide.setAttribute('role', 'group');
+          slide.setAttribute('aria-roledescription', 'slide');
+          slide.setAttribute('aria-label', labelFor(root, 'slide') + ' ' + (i + 1) + ' / ' + count);
+          var copy;
+          if (m.tagName === 'VIDEO') {
+            copy = document.createElement('video');
+            copy.muted = true;
+            copy.loop = true;
+            copy.playsInline = true;
+            copy.preload = 'metadata';
+            copy.setAttribute('aria-label', altOf(m));
+          } else {
+            copy = document.createElement('img');
+            copy.alt = m.alt;
+            copy.draggable = false;
+          }
+          copy.src = m.currentSrc || m.src;
+          slide.appendChild(copy);
+          // Clicking the empty area around the image closes the lightbox.
+          slide.addEventListener('click', function (e) { if (e.target === slide) closeLightbox(); });
+          lightTrack.appendChild(slide);
+          return copy;
+        });
+
+        var foot = document.createElement('div');
+        foot.className = 'tn-lightbox__foot';
+        dialog.appendChild(bar);
+        dialog.appendChild(lightTrack);
+        dialog.appendChild(foot);
+        document.body.appendChild(dialog);
+
+        var lightControls = null;
+        var lightNav = snapTrack(lightTrack, count, function (i) {
+          if (lightControls) lightControls.update(i);
+          playActive(i);
+        });
+        if (count > 1) {
+          lightControls = buildControls(root, count, lightNav.goTo);
+          foot.appendChild(lightControls.el);
+        }
+        function playActive(i) {
+          copies.forEach(function (c, k) { if (c.tagName === 'VIDEO') setPlaying(c, k === i); });
+        }
+        lightNav.goTo(start, true);
+        if (lightControls) lightControls.update(start);
+        playActive(start);
+
+        var previousOverflow = document.documentElement.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+        closeButton.addEventListener('click', closeLightbox);
+        document.addEventListener('keydown', onKey);
+        closeButton.focus({ preventScroll: true });
+        requestAnimationFrame(function () { dialog.classList.add('is-visible'); });
+
+        function onKey(e) {
+          if (e.key === 'Escape') { e.preventDefault(); closeLightbox(); }
+          else if (e.key === 'ArrowLeft') { e.preventDefault(); lightNav.goTo(lightNav.index() - 1); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); lightNav.goTo(lightNav.index() + 1); }
+          else if (e.key === 'Tab') {
+            // Keep focus inside the dialog.
+            var focusable = Array.prototype.slice.call(dialog.querySelectorAll('button:not(:disabled)'));
+            var first = focusable[0], last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+          }
+        }
+
+        function closeLightbox() {
+          var last = lightNav.index();
+          document.removeEventListener('keydown', onKey);
+          copies.forEach(function (c) { if (c.tagName === 'VIDEO') c.pause(); });
+          dialog.remove();
+          document.documentElement.style.overflow = previousOverflow;
+          lightboxOpen = false;
+          // Leave the inline carousel on the slide the lightbox ended on.
+          if (nav) nav.goTo(last, true);
+          var target = reveal ? triggers[showVideo ? 1 : 0] : triggers[last];
+          target.focus({ preventScroll: true });
+          syncVideo();
+        }
+      }
     });
   }
 
@@ -342,7 +559,6 @@
      Labels come from data-label-previous / -next / -slide on the root.
      ------------------------------------------------------------------------ */
   function initMentions() {
-    var MAX_DOTS = 10;
     Array.prototype.forEach.call(document.querySelectorAll('[data-mentions]'), function (root) {
       var track = root.querySelector('.mentions__track');
       if (!track) return;
@@ -351,25 +567,10 @@
       if (count < 2) return;
 
       var index = 0;
-      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
-      var chevron = function (d) {
-        return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-          'stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          '<path d="' + d + '"/></svg>';
-      };
-      var button = function (className, label, html) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = className;
-        b.setAttribute('aria-label', label);
-        b.innerHTML = html;
-        return b;
-      };
-
       var controls = document.createElement('div');
       controls.className = 'mentions__controls';
-      var prev = button('mentions__arrow', root.getAttribute('data-label-previous'), chevron('M15 5l-7 7 7 7'));
-      var next = button('mentions__arrow', root.getAttribute('data-label-next'), chevron('M9 5l7 7-7 7'));
+      var prev = makeButton('mentions__arrow', root.getAttribute('data-label-previous'), chevron('M15 5l-7 7 7 7'));
+      var next = makeButton('mentions__arrow', root.getAttribute('data-label-next'), chevron('M9 5l7 7-7 7'));
       var counter = null;
       var dots = [];
       var position;
@@ -382,7 +583,7 @@
         position = document.createElement('div');
         position.className = 'mentions__dots';
         cards.forEach(function (_, i) {
-          var dot = button('mentions__dot', root.getAttribute('data-label-slide') + ' ' + (i + 1), '<span></span>');
+          var dot = makeButton('mentions__dot', root.getAttribute('data-label-slide') + ' ' + (i + 1), '<span></span>');
           dot.addEventListener('click', function () { goTo(i); });
           position.appendChild(dot);
           dots.push(dot);
